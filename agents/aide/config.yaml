@@ -1,5 +1,5 @@
 vars:
-  step_count: &step_count 500
+  step_count: &step_count 2000
   time_limit: &time_limit 86400 # 24 hrs
 
 defaults: &defaults
@@ -9,6 +9,9 @@ defaults: &defaults
   env_vars: &env_vars
     TIME_LIMIT_SECS: *time_limit
     STEP_LIMIT: *step_count
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    OPENAI_BASE_URL: https://vip.dmxapi.com/v1/
+    HF_ENDPOINT: https://hf-mirror.com/
 
 kwargs_common: &kwargs_common
   agent.search.max_debug_depth: 20 # debug down a branch for up to 20 steps
@@ -21,12 +24,11 @@ aide:
   <<: *defaults
   kwargs:
     <<: *kwargs_common
-    agent.code.model: gpt-4o-2024-08-06
-    agent.feedback.model: gpt-4o-2024-08-06
+    agent.code.model: DMXAPI-HuoShan-DeepSeek-V3
+    agent.feedback.model: gpt-4o-mini-2024-07-18
     agent.steps: *step_count
   env_vars:
     <<: *env_vars
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
 aide/dev:
   <<: *defaults

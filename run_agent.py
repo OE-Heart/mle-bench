@@ -68,6 +68,7 @@ async def worker(
                 retain_container=args.retain,
                 run_dir=task.path_to_run,
                 logger=run_logger,
+                gpus=args.gpu_device,
             )
             task_output["success"] = True
 
@@ -229,6 +230,14 @@ if __name__ == "__main__":
         type=str,
         required=False,
         default=registry.get_data_dir(),
+    )
+    parser.add_argument(
+        "--gpu-device",
+        help="List of GPU devices to pass to the container.",
+        type=str,
+        required=False,
+        nargs='+',
+        default=[0],
     )
     args = parser.parse_args()
     logger = get_logger(__name__)

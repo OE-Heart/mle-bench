@@ -93,6 +93,7 @@ def run_in_container(
     retain_container: bool,
     run_dir: Path,
     logger: logging.Logger,
+    gpus: list
 ) -> Path:
     """
     Runs environment containing the competition and agent for a set maximum amount of time.
@@ -132,6 +133,7 @@ def run_in_container(
         },
         container_image=image,
         privileged=agent.privileged,
+        gpus=gpus,
     )
 
     logger.info(purple(f"Run started: {run_dir}"))

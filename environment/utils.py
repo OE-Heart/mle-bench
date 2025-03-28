@@ -8,6 +8,7 @@ from typing import Optional
 import docker
 from docker import DockerClient
 from docker.models.containers import Container
+from docker.types import DeviceRequest
 
 from mlebench.registry import Competition
 from mlebench.utils import get_logger, get_timestamp
@@ -122,6 +123,7 @@ def create_competition_container(
     env_vars: dict,
     container_image: str = "mlebench-env",
     privileged: bool = False,
+    gpus: list = None
 ) -> Container:
     """
     Creates a container for the given competition, mounting the competition data and agent volumes.
@@ -140,6 +142,14 @@ def create_competition_container(
     """
     unique_id = str(uuid.uuid4().hex)
     timestamp = get_timestamp()
+    
+    gpu_ids_str = [str(id) for id in gpus]
+    device_requests = [
+        DeviceRequest(
+            device_ids=gpu_ids_str,
+            capabilities=[['gpu']]
+        )
+    ]
 
     container = client.containers.create(
         image=container_image,
@@ -149,6 +159,7 @@ def create_competition_container(
         volumes=volumes_config,
         environment=env_vars,
         privileged=privileged,
+        device_requests=device_requests
     )
 
     logger.info(f"Container created: {container.name}")
