@@ -9,7 +9,7 @@ defaults: &defaults
   env_vars: &env_vars
     TIME_LIMIT_SECS: *time_limit
     STEP_LIMIT: *step_count
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    OPENAI_API_KEY: sk-QFwobd7qjYCvm3e9GlWiVHClsgobSs5wZ8QZ6q77bXzRTqJc
     OPENAI_BASE_URL: https://vip.dmxapi.com/v1/
     HF_ENDPOINT: https://hf-mirror.com/
 
@@ -25,6 +25,16 @@ aide:
   kwargs:
     <<: *kwargs_common
     agent.code.model: DMXAPI-HuoShan-DeepSeek-V3
+    agent.feedback.model: gpt-4o-mini-2024-07-18
+    agent.steps: *step_count
+  env_vars:
+    <<: *env_vars
+
+aide/o3-mini:
+  <<: *defaults
+  kwargs:
+    <<: *kwargs_common
+    agent.code.model: o3-mini-2025-01-31
     agent.feedback.model: gpt-4o-mini-2024-07-18
     agent.steps: *step_count
   env_vars:

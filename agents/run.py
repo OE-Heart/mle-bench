@@ -1,5 +1,7 @@
 import logging
 import time
+
+import threading
 from pathlib import Path
 
 import docker
@@ -43,10 +45,49 @@ def save_output(container: Container, save_dir: Path, container_config: dict) ->
     return save_dir
 
 
-def execute_agent(container: Container, agent: Agent, logger: logging.Logger):
+def save_output_periodically(
+    container: Container,
+    save_dir: Path,
+    container_config: dict,
+    logger: logging.Logger,
+    interval=3600,
+) -> Path:
+    """
+    This function will save output periodically every `interval` seconds.
+    """
+    save_count = 1
+
+    def save_output_task():
+        nonlocal save_count
+
+        while True:
+            time.sleep(interval)
+
+            new_save_dir = save_dir / f"save_{save_count}"
+            new_save_dir.mkdir(parents=True, exist_ok=True)
+
+            logger.info(f"Saving output at timestamp {save_count}")
+            save_output(container, new_save_dir, container_config)
+            save_count += 1
+
+    threading.Thread(target=save_output_task, daemon=True).start()
+
+    return save_dir
+
+
+def execute_agent(
+    container: Container,
+    agent: Agent,
+    logger: logging.Logger,
+    save_dir: Path,
+    container_config: dict,
+):
     """
     Initiates the agent via its start script inside the container.
     """
+    # Start saving output periodically
+    save_output_periodically(container, save_dir, container_config, logger)
+    
     cmd = ["bash", f"{CONSTANTS['AGENT_DIR']}/start.sh"]
 
     if agent.kwargs_type == "argparse":
@@ -147,7 +188,7 @@ def run_in_container(
             raise RuntimeError(
                 "The grading server failed to start within 60 seconds. This is likely due to an error in `entrypoint.sh`; check the logs."
             )
-        execute_agent(container, agent, logger)
+        execute_agent(container, agent, logger, run_dir, container_config)
         save_output(container, run_dir, container_config)
         time_end = time.monotonic()
         logger.info(f"Run completed in {time_end - time_start:.2f} seconds.")
