@@ -386,8 +386,10 @@ class Agent:
                 with open(best_solution_dir / "solution.py", "w") as f:
                     f.write(result_node.code)
                 # take note of the node id of the best node
-                with open(best_solution_dir / "node_id.txt", "w") as f:
-                    f.write(str(result_node.id))
+                with open(best_solution_dir / "node_info.txt", "w") as f:
+                    f.write(
+                        f"node_id: {str(result_node.id)}\n\nmetric: {str(result_node.metric)}\n\nsolution:\n{result_node.plan}"
+                    )
             else:
                 logger.info(f"Node {result_node.id} is not the best node")
                 logger.info(f"Node {best_node.id} is still the best node")

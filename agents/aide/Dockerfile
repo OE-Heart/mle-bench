@@ -1,4 +1,4 @@
-FROM mlagent
+FROM mlagent-base
 
 # where to put submission.csv, will be extracted
 ARG SUBMISSION_DIR
