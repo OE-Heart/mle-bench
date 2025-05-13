@@ -1,1 +1,3 @@
-mlebench grade-sample /zjunlp/oyx/mle-bench/runs/2025-04-03T05-31-11-GMT_run-group_aide/aptos2019-blindness-detection_013a8865-8bde-49b5-b3d1-5a9a8d28dd67/submission/submission.csv aptos2019-blindness-detection --data-dir /newdisk1/oyx/mle-bench/data
+
+
+mlebench grade-sample /zjunlp/oyx/mle-bench/runs/2025-05-09T11-43-20-GMT_run-group_aide/mlsp-2013-birds_f3fc2d3b-010f-4c0e-bfa2-512ff20b1be2/save_5/submission/submission.csv mlsp-2013-birds --data-dir /newdisk1/oyx/mle-bench/data
